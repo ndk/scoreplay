@@ -1,0 +1,41 @@
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - 127.0.0.1:4566:4566            # LocalStack Gateway
+      - 127.0.0.1:4510-4559:4510-4559  # external services port range
+    env_file: .env
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - SERVICES=cloudformation,s3
+      - DEBUG=${DEBUG:-1}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./deploy/scoreplay-cfn.yaml:/scoreplay-cfn.yaml:ro
+      - ./deploy/localstack-setup.sh:/etc/localstack/init/ready.d/localstack-setup.sh:ro
+
+  redis:
+    image: redis:latest
+    ports:
+      - 127.0.0.1:6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      - REDIS_INIT_ADDRESS=redis:6379
+      - AWS_ENDPOINT_URL=http://localhost:4566
+    ports:
+      - 127.0.0.1:8080:8080
+    depends_on:
+      localstack:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

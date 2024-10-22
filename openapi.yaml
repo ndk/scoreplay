@@ -1,0 +1,141 @@
+openapi: 3.0.0
+info:
+  title: ScorePlay Media API
+  description: API for managing tags and media content for sports organizations.
+  version: 1.1.0
+
+paths:
+  /tags:
+    post:
+      summary: Create a new tag
+      description: Create a tag which can represent anything like a player's name, location, specific game, or competition.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the tag
+                  example: Wembley Stadium
+              required:
+                - name
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+
+    get:
+      summary: List all tags
+      description: Retrieve a list of all tags.
+      responses:
+        '200':
+          description: A list of tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Tag' }
+                required:
+                  - items
+
+  /media:
+    post:
+      summary: Create media with pre-signed URL
+      description: Generate a pre-signed URL for uploading a media file, and register the media item with metadata such as name and tags. Once the media file is uploaded using the pre-signed URL, the metadata is automatically registered.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the media item
+                  example: Super nice picture
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  description: List of tags associated with the media
+                  example: ["1234", "5678"]
+              required:
+                - name
+                - tags
+      responses:
+        '201':
+          description: Pre-signed URL and related information
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UploadRequest' }
+
+    get:
+      summary: Search medias by tag
+      description: Retrieve media items by searching for a specific tag.
+      parameters:
+        - name: tag
+          required: true
+          in: query
+          description: Tag to search for media items
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of media items matching the tag
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Media' }
+                required:
+                  - items
+
+components:
+  responses:
+    Created: # 201
+      description: Created
+
+  schemas:
+    Tag:
+      type: string
+      description: Name of the tag
+
+    UploadRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The pre-signed URL to upload the media
+        method:
+          type: string
+          description: HTTP method to be used (usually PUT or POST)
+        signedHeader:
+          type: object
+          x-go-type: http.Header
+          additionalProperties:
+            type: string
+          description: HTTP headers required for the request
+      required:
+        - url
+        - method
+        - signedHeader
+
+    Media:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the media item
+        tags:
+          type: array
+          items:
+            type: string
+          description: List of tag names associated with the media
+        url:
+          type: string
+          description: URL to access the media file
+      required:
+        - name
+        - tags
+        - url

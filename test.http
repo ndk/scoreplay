@@ -1,0 +1,84 @@
+###
+POST {{APIURL}}/tags
+Content-Type: application/json
+
+{"name": "Sample Tag"}
+
+###
+POST {{APIURL}}/tags
+Content-Type: application/json
+
+{"name": "tag1"}
+
+###
+GET {{APIURL}}/tags
+
+###
+# @name prepare
+POST {{APIURL}}/media
+Content-Type: application/json
+
+{
+  "name": "Hail Elmo!!!",
+  "tags": ["elmo", "meme"]
+}
+
+###
+# @ref prepare
+
+{{
+  const { signedHeader, url, method } = response.parsedBody;
+  const headers = Object.entries(signedHeader).reduce((acc, [key, value]) => {
+    acc[key] = value.join(', ');
+    return acc;
+  }, {});
+  exports.headers = headers;
+}}
+
+PUT {{ prepare.url }}
+Content-Type: image/jpeg
+
+< ./test/elmo.jpg
+
+###
+GET {{APIURL}}/media?tag=elmo
+
+###
+GET {{APIURL}}/media?tag=meme
+
+###
+# @name prepare2
+POST {{APIURL}}/media
+Content-Type: application/json
+
+{
+  "name": "Dependency",
+  "tags": ["xkcd", "meme"]
+}
+
+
+###
+# @ref prepare2
+
+{{
+  const { signedHeader, url, method } = response.parsedBody;
+  const headers = Object.entries(signedHeader).reduce((acc, [key, value]) => {
+    acc[key] = value.join(', ');
+    return acc;
+  }, {});
+  exports.headers = headers;
+}}
+
+PUT {{ prepare2.url }}
+Content-Type: image/png
+
+< ./test/dependency_2x.png
+
+###
+GET {{APIURL}}/media?tag=xkcd
+
+###
+GET {{APIURL}}/media?tag=meme
+
+###
+GET {{APIURL}}/media

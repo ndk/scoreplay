@@ -1,0 +1,19 @@
+services:
+  app:
+    ports: []
+    environment:
+      - AWS_ENDPOINT_URL=http://localstack:4566
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    env_file: .env
+    environment:
+      - APIURL=http://app:8080
+      - AWS_ENDPOINT_URL=http://localstack:4566
+    depends_on:
+      app:
+        condition: service_healthy
+    command: go test --tags=integration -v ./tests/...

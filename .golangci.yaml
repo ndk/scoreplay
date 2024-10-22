@@ -1,0 +1,24 @@
+linters:
+  enable-all: true
+  disable:
+    - depguard
+    - execinquery
+    - exportloopref
+    - gomnd
+    - tagalign
+    - testpackage
+    - varnamelen
+    - wsl
+    - forcetypeassert
+    - exhaustruct
+    - containedctx
+    - revive
+    - nlreturn
+    - forbidigo
+    - funlen
+    - paralleltest
+    - lll
+    - wrapcheck
+    - gofumpt
+    - gci
+    - ireturn
