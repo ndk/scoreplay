@@ -38,7 +38,7 @@ Content-Type: application/json
 PUT {{ prepare.url }}
 Content-Type: image/jpeg
 
-< ./test/elmo.jpg
+< ./testdata/elmo.jpg
 
 ###
 GET {{APIURL}}/media?tag=elmo
@@ -72,7 +72,7 @@ Content-Type: application/json
 PUT {{ prepare2.url }}
 Content-Type: image/png
 
-< ./test/dependency_2x.png
+< ./testdata/dependency_2x.png
 
 ###
 GET {{APIURL}}/media?tag=xkcd
