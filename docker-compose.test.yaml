@@ -1,4 +1,9 @@
 services:
+  localstack:
+    ports: []
+  redis:
+    ports: []
+
   app:
     ports: []
     environment:
