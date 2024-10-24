@@ -4,6 +4,10 @@
 
 This project implements a media management service for ScorePlay, aimed at helping sports organizations efficiently store, index, and retrieve media files (photos). The service is designed to allow tagging media with various labels (such as player names, locations, or competitions), simplifying the process of finding and managing specific content.
 
+Both could be configured via environment variables. Look for an example at [`example_test.go`](example_test.go)
+
+Communications between the server and the client goes via [RESTAPI](openapi.yaml)
+
 ## Features
 
 1. **Create a Tag**: The service allows creating tags, which can be associated with media files.
