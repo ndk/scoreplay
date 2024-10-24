@@ -15,6 +15,9 @@ Communications between the server and the client goes via [RESTAPI](openapi.yaml
 3. **Create Media**: Users can upload media files (photos) and associate them with tags. Media is stored in AWS S3, and the service generates presigned URLs to handle the file upload process securely.
 4. **Search Media by Tag**: Media can be searched using associated tags, and relevant media entries are retrieved.
 
+## Assumptions
+- Creating media also involves upserting tags
+
 ## API Endpoints
 
 ### Create a Tag
